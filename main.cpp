@@ -57,39 +57,31 @@ void compute_and_display_histogram(const Mat& src_img, const string& windowName,
 }
 
 
-// 直方图均衡化函数
-Mat histogram_equalization(const Mat& src_img, int hist_size) {
+Mat calculate_transformation_function(const Mat& src_img, int hist_size) {
     // Compute histogram
     Mat hist = calculate_hist(src_img, hist_size);
 
     // Calculate CDF
-    Mat cdf(hist_size, 1, CV_64F);
-    cdf.at<double>(0) = hist.at<float>(0);
+    Mat cdf = hist.clone();
     for (int i = 1; i < hist_size; i++) {
-        cdf.at<double>(i) = cdf.at<double>(i-1) + hist.at<float>(i);
+        cdf.at<float>(i) += cdf.at<float>(i-1);
     }
+    cdf /= cdf.at<float>(hist_size-1);
+    cdf *= 255;
 
-    // Find the minimum of CDF
-    double min_cdf = 0;
-    for (int i = 0; i < hist_size; i++) {
-        if (cdf.at<double>(i) > 0) {
-            min_cdf = cdf.at<double>(i);
-            break;
-        }
-    }
+    return cdf;
+}
+
+
+Mat histogram_equalization(const Mat& src_img, int hist_size) {
+    // Compute CDF
+    Mat cdf = calculate_transformation_function(src_img, hist_size);
 
     // Create Lookup Table
     Mat lookupTable(1, 256, CV_8U);
     uchar* p = lookupTable.ptr();
-    double total_pixels = src_img.total();
     for (int i = 0; i < 256; i++) {
-        if (cdf.at<double>(i) > 0) {
-            p[i] = saturate_cast<uchar>(
-                255.0 * (cdf.at<double>(i) - min_cdf) / (total_pixels - min_cdf)
-            );
-        } else {
-            p[i] = 0;
-        }
+        p[i] = saturate_cast<uchar>(cdf.at<float>(i));
     }
 
     // Apply LUT
