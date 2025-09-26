@@ -62,24 +62,37 @@ Mat histogram_equalization(const Mat& src_img, int hist_size) {
     // Compute histogram
     Mat hist = calculate_hist(src_img, hist_size);
 
-    // 计算累积分布函数(CDF)
-    Mat cdf = hist.clone();
+    // Calculate CDF
+    Mat cdf(hist_size, 1, CV_64F);
+    cdf.at<double>(0) = hist.at<float>(0);
     for (int i = 1; i < hist_size; i++) {
-        cdf.at<float>(i) += cdf.at<float>(i-1);
+        cdf.at<double>(i) = cdf.at<double>(i-1) + hist.at<float>(i);
     }
 
-    // 归一化CDF到[0,255]范围
-    cdf /= cdf.at<float>(hist_size-1);
-    cdf *= 255;
+    // Find the minimum of CDF
+    double min_cdf = 0;
+    for (int i = 0; i < hist_size; i++) {
+        if (cdf.at<double>(i) > 0) {
+            min_cdf = cdf.at<double>(i);
+            break;
+        }
+    }
 
-    // 创建查找表(LUT)用于灰度级映射
+    // Create Lookup Table
     Mat lookupTable(1, 256, CV_8U);
     uchar* p = lookupTable.ptr();
+    double total_pixels = src_img.total();
     for (int i = 0; i < 256; i++) {
-        p[i] = saturate_cast<uchar>(cdf.at<float>(i));
+        if (cdf.at<double>(i) > 0) {
+            p[i] = saturate_cast<uchar>(
+                255.0 * (cdf.at<double>(i) - min_cdf) / (total_pixels - min_cdf)
+            );
+        } else {
+            p[i] = 0;
+        }
     }
 
-    // 应用直方图均衡化
+    // Apply LUT
     Mat equalized_img;
     LUT(src_img, lookupTable, equalized_img);
 
