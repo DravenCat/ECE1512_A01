@@ -128,13 +128,15 @@ int main() {
         return -1;
     }
 
+    // imwrite("../img/org_img.png", src_img);
+
     // Compute and display histogram of original image
-    compute_and_display_histogram(src_img, "../img/org_hist.tif", 256);
+    compute_and_display_histogram(src_img, "../img/org_hist.png", 256);
 
     Mat equalized_img = histogram_equalization(src_img, HIST_SIZE);
 
-    compute_and_display_histogram(equalized_img, "../img/eq_hist.tif", 256);
-    imwrite("../img/eq_img.tif", equalized_img);
+    compute_and_display_histogram(equalized_img, "../img/eq_hist.png", 256);
+    imwrite("../img/eq_img.png", equalized_img);
 
     // log transform
     // Mat log_img_three = log_transform_enhance(src_img, 3);
@@ -142,17 +144,15 @@ int main() {
     // Mat log_img_two = log_transform_enhance(src_img, 2);
     // imwrite("../img/log_img_2.tif", log_img_two);
     // Mat log_img_two_half = log_transform_enhance(src_img, 2.5);
-    // imwrite("../img/log_img_25.tif", log_img_two_half);
+    // imwrite("../img/log_img_25_b.png", log_img_two_half);
 
     // power transform
     // Mat power_img_three = power_law_enhance(src_img, 2, 0.8);
-    // imwrite("../img/power_img_208.tif", power_img_three);
+    // imwrite("../img/power_img_208_b.png", power_img_three);
     // Mat power_img_two = power_law_enhance(src_img, 2, 0.9);
     // imwrite("../img/power_img_209.tif", power_img_two);
     // Mat power_img_two_half = power_law_enhance(src_img, 2, 0.7);
     // imwrite("../img/power_img_207.tif", power_img_two_half);
-    // Mat enhanced_img = power_law_enhance(src_img, 1.0, 0.5);
-    // compute_and_display_histogram(enhanced_img, "Enhanced Image Histogram");
 
     waitKey(0);
 
