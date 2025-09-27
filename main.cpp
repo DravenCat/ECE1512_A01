@@ -136,12 +136,12 @@ void plot_transformation_function(const Mat& src_img, const string& filename) {
     }
 
     // Draw reference line
-    Point p1(margin, plot_height - margin);
-    Point p2(plot_width - margin, margin);
-    line(plot, p1, p2, Scalar(0, 255, 0), 1, LINE_AA);
+    // Point p1(margin, plot_height - margin);
+    // Point p2(plot_width - margin, margin);
+    // line(plot, p1, p2, Scalar(0, 255, 0), 1, LINE_AA);
 
     putText(plot, "Transformation Function", Point(plot_width - 250, margin + 30), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(255, 0, 0), 2);
-    putText(plot, "y = x (Reference)", Point(plot_width - 250, margin + 60), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(0, 255, 0), 2);
+    // putText(plot, "y = x (Reference)", Point(plot_width - 250, margin + 60), FONT_HERSHEY_SIMPLEX, 0.6, Scalar(0, 255, 0), 2);
 
     putText(plot, "Histogram Equalization Transformation Function", Point(plot_width/2 - 200, 30), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 0), 2);
 
@@ -205,20 +205,20 @@ int main() {
     imwrite("../img/eq_img.png", equalized_img);
 
     // log transform
-    // Mat log_img_three = log_transform_enhance(src_img, 3);
-    // imwrite("../img/log_img_3.tif", log_img_three);
-    // Mat log_img_two = log_transform_enhance(src_img, 2);
-    // imwrite("../img/log_img_2.tif", log_img_two);
-    // Mat log_img_two_half = log_transform_enhance(src_img, 2.5);
-    // imwrite("../img/log_img_25_b.png", log_img_two_half);
+    Mat log_img_three = log_transform_enhance(src_img, 3);
+    imwrite("../img/log_img_3.png", log_img_three);
+    Mat log_img_two = log_transform_enhance(src_img, 2);
+    imwrite("../img/log_img_2.png", log_img_two);
+    Mat log_img_two_half = log_transform_enhance(src_img, 2.5);
+    imwrite("../img/log_img_25_b.png", log_img_two_half);
 
     // power transform
-    // Mat power_img_three = power_law_enhance(src_img, 2, 0.8);
-    // imwrite("../img/power_img_208_b.png", power_img_three);
-    // Mat power_img_two = power_law_enhance(src_img, 2, 0.9);
-    // imwrite("../img/power_img_209.tif", power_img_two);
-    // Mat power_img_two_half = power_law_enhance(src_img, 2, 0.7);
-    // imwrite("../img/power_img_207.tif", power_img_two_half);
+    Mat power_img_three = power_law_enhance(src_img, 2, 0.8);
+    imwrite("../img/power_img_208_b.png", power_img_three);
+    Mat power_img_two = power_law_enhance(src_img, 2, 0.9);
+    imwrite("../img/power_img_209.png", power_img_two);
+    Mat power_img_two_half = power_law_enhance(src_img, 2, 0.7);
+    imwrite("../img/power_img_207.png", power_img_two_half);
 
     waitKey(0);
 
